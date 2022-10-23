@@ -1,0 +1,21 @@
+{
+    "name": "gk/smpp",
+    "description": "Laravel smpp client",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Gk\\Smpp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Giorgi Kotchlamazashvili",
+            "email": "kogiorgi24@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php-smpp/php-smpp": "1.2",
+        "illuminate/support": "^5|^6|^7|^8"
+    }
+}

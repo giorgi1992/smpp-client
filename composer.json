@@ -13,12 +13,6 @@
             "email": "kogiorgi24@gmail.com"
         }
     ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/giorgi1992/smpp-client"
-        }
-    ],
     "minimum-stability": "dev",
     "require": {
         "php-smpp/php-smpp": "1.2",

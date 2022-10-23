@@ -7,11 +7,6 @@ use Illuminate\Support\ServiceProvider;
 class SmppProvider extends ServiceProvider
 {
     /**
-     * Indicates if loading of the provider is deferred.
-     */
-    protected $defer = true;
-
-    /**
      * Boot service provider.
      */
     public function boot()

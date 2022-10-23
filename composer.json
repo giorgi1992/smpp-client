@@ -4,13 +4,19 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Gk\\Smpp\\": "src/"
+            "Gko\\Smpp\\": "src/"
         }
     },
     "authors": [
         {
             "name": "Giorgi Kotchlamazashvili",
             "email": "kogiorgi24@gmail.com"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/giorgi1992/smpp-client"
         }
     ],
     "minimum-stability": "dev",

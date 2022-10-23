@@ -1,6 +1,6 @@
 <?php
 
-namespace Gk\Smpp;
+namespace Gko\Smpp;
 
 interface SmppInterface
 {

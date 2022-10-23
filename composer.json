@@ -1,5 +1,6 @@
 {
     "name": "gko/smpp",
+    "version": "1.0",
     "description": "Laravel smpp client",
     "license": "MIT",
     "autoload": {

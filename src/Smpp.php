@@ -3,6 +3,7 @@
 namespace Gk\Smpp;
 
 class Smpp implements SmppInterface {
+
     public function sendOne($phone, $message)
     {
         return $phone.$message;

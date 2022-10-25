@@ -4,6 +4,7 @@ namespace Gko\Smpp;
 
 use Illuminate\Contracts\Config\Repository;
 use SmppClient;
+use SmppException;
 use SocketTransport;
 use SocketTransportException;
 
@@ -65,12 +66,13 @@ class Smpp implements SmppInterface
 
                     dd($this->smpp, $this->transport);
                 }
+                catch (SmppException $e)
+                {
+                    print "Provider: {$provider}, Message: {$e->getMessage()}";
+                }
                 catch (SocketTransportException $e)
                 {
-                    if($config['debug'])
-                        print $e;
-                    else
-                        print "Provider: {$provider}, Message: {$e->getMessage()}";
+                    print "Provider: {$provider}, Message: {$e->getMessage()}";
                 }
             }
         else

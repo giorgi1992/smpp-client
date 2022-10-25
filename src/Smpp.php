@@ -76,7 +76,7 @@ class Smpp implements SmppInterface
     {
         foreach ($this->providers as $config)
 
-            return new SmppAddress($config['sender'], $config['source_ton']);
+            return new SmppAddress($config['sender'], PhpSmpp::TON_ALPHANUMERIC);
     }
 
     /**
@@ -86,7 +86,7 @@ class Smpp implements SmppInterface
     {
         foreach ($this->providers as $config)
 
-            return new SmppAddress($mobile, $config['destination_ton'], $config['destination_npi']);
+            return new SmppAddress($mobile, PhpSmpp::TON_INTERNATIONAL, PhpSmpp::NPI_E164);
     }
 
     /**

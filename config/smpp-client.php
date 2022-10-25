@@ -35,7 +35,7 @@ return [
             'sms_registered_delivery_flag' => true,
             'system_type' => 'default',
             'force_ipv4' =>  false,
-            'debug' =>  true
+            'debug' =>  false
         ]
     ]
 ];

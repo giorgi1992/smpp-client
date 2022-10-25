@@ -72,7 +72,7 @@ class Smpp implements SmppInterface
                 }
             }
 
-        print "The file config/smpp-config.php, does not exist";
+        print "File config/smpp-config.php, does not exist";
     }
 
 }

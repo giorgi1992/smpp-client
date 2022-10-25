@@ -34,6 +34,7 @@ return [
 
             'sms_registered_delivery_flag' => true,
             'system_type' => 'default',
+            'data_coding_ucs2' => 8,
             'force_ipv4' =>  false,
             'debug' =>  false
         ]

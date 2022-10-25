@@ -94,10 +94,10 @@ class Smpp implements SmppInterface
      */
     protected function send($sender, $recipient, $message)
     {
-//        $message = $this->gsmEncoder($message);
+        $message = $this->gsmEncoder($message);
 
         if(isset($this->smpp))
-            return $this->smpp->sendSMS($sender, $recipient, $message, null, PhpSmpp::DATA_CODING_UCS2);
+            return $this->smpp->sendSMS($sender, $recipient, $message, []);
     }
 
     /**

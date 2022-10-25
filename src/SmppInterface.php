@@ -4,6 +4,7 @@ namespace Gko\Smpp;
 
 interface SmppInterface
 {
+
     /**
      * Send a one SMS.
      */
@@ -13,4 +14,5 @@ interface SmppInterface
      * Send bulk SMS.
      */
     public function sendBulk(array $phones, $message);
+
 }

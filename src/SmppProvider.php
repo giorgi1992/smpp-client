@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 
 class SmppProvider extends ServiceProvider
 {
+
     /**
      * Boot service provider.
      */
@@ -23,4 +24,5 @@ class SmppProvider extends ServiceProvider
     {
         $this->app->bind(SmppInterface::class, Smpp::class);
     }
+
 }

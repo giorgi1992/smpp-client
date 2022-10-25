@@ -43,33 +43,36 @@ class Smpp implements SmppInterface
      */
     protected function setup()
     {
-        foreach ($this->providers as $provider => $config)
-        {
-            $transport = new SocketTransport([$config['host']], $config['port']);
-            try
+        if($this->providers)
+            foreach ($this->providers as $provider => $config)
             {
-                $transport->setRecvTimeout($config['timeout']);
-                $transport->debug = $config['debug'];
+                $transport = new SocketTransport([$config['host']], $config['port']);
+                try
+                {
+                    $transport->setRecvTimeout($config['timeout']);
+                    $transport->debug = $config['debug'];
 
-                $smpp = new SmppClient($transport);
-                $smpp::$system_type = $config['system_type'];
-                $smpp::$sms_registered_delivery_flag = $config['sms_registered_delivery_flag'];
-                $smpp->debug = $config['debug'];
+                    $smpp = new SmppClient($transport);
+                    $smpp::$system_type = $config['system_type'];
+                    $smpp::$sms_registered_delivery_flag = $config['sms_registered_delivery_flag'];
+                    $smpp->debug = $config['debug'];
 
-                $transport->open();
-                $smpp->bindTransmitter($config['login'], $config['password']);
+                    $transport->open();
+                    $smpp->bindTransmitter($config['login'], $config['password']);
 
-                $this->smpp = $smpp;
-                $this->transport = $transport;
-            }
-            catch (SocketTransportException $e)
-            {
-                if($config['debug'])
-                    print $e;
-                else
+                    $this->smpp = $smpp;
+                    $this->transport = $transport;
+                }
+                catch (SocketTransportException $e)
+                {
+                    if($config['debug'])
+                        print $e;
+
                     print "Provider: {$provider}, Message: {$e->getMessage()}";
+                }
             }
-        }
+
+        print "The file config/smpp-config.php, does not exist";
     }
 
 }

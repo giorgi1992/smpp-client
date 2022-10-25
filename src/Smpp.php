@@ -67,12 +67,12 @@ class Smpp implements SmppInterface
                 {
                     if($config['debug'])
                         print $e;
-
-                    print "Provider: {$provider}, Message: {$e->getMessage()}";
+                    else
+                        print "Provider: {$provider}, Message: {$e->getMessage()}";
                 }
             }
-
-        print "File config/smpp-client.php, provider does not exist";
+        else
+            print "File config/smpp-client.php, provider does not exist";
     }
 
 }

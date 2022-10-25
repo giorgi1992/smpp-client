@@ -50,9 +50,7 @@ class Smpp implements SmppInterface
     {
         $this->setup();
 
-        $this->send($this->sender(), $this->recipient($mobile), $message);
-
-
+        return $this->send($this->sender(), $this->recipient($mobile), $message);
     }
 
     /**

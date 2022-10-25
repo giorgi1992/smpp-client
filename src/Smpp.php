@@ -2,8 +2,11 @@
 
 namespace Gko\Smpp;
 
+use GsmEncoder;
 use Illuminate\Contracts\Config\Repository;
+use SmppAddress;
 use SmppClient;
+use SMPP as PhpSmpp;
 use SmppException;
 use SocketTransport;
 use SocketTransportException;
@@ -28,7 +31,10 @@ class Smpp implements SmppInterface
     public function sendOne($phone, $message)
     {
         $this->setup();
-        return [$phone, $message];
+
+        $this->send(995558685848, 'Message');
+
+        // $this->smpp->close();
     }
 
     /**
@@ -40,16 +46,29 @@ class Smpp implements SmppInterface
     }
 
     /**
+     * SMPP send sms
+     */
+    protected function send($mobile, $message)
+    {
+        $message = $this->gsmEncoder($message);
+        $sender = $this->sender();
+        $recipient = $this->recipient($mobile);
+
+        dd($this->smpp);
+        $response = $this->smpp->sendSMS($sender, $recipient, $message, null, PhpSmpp::DATA_CODING_UCS2);
+
+    }
+
+    /**
      * SMPP setup
      */
     protected function setup()
     {
-        if($this->providers)
-            foreach ($this->providers as $provider => $config)
-            {
+        if($this->providers) {
+            foreach ($this->providers as $provider => $config) {
                 $transport = new SocketTransport([$config['host']], $config['port']);
-                try
-                {
+
+                try {
                     $transport->setRecvTimeout($config['timeout']);
                     $transport->debug = $config['debug'];
 
@@ -63,20 +82,39 @@ class Smpp implements SmppInterface
 
                     $this->smpp = $smpp;
                     $this->transport = $transport;
-
-                    dd($this->smpp, $this->transport);
-                }
-                catch (SmppException $e)
-                {
-                    print "Provider: {$provider}, Message: {$e->getMessage()}";
-                }
-                catch (SocketTransportException $e)
-                {
+                } catch (SmppException | SocketTransportException $e) {
                     print "Provider: {$provider}, Message: {$e->getMessage()}";
                 }
             }
+        }
         else
             print "File config/smpp-client.php, provider does not exist";
+    }
+
+    /**
+     * SMPP gsm encoder
+     */
+    protected function gsmEncoder($message)
+    {
+        return GsmEncoder::utf8_to_gsm0338($message);
+    }
+
+    /**
+     * SMPP Sender
+     */
+    protected function sender()
+    {
+        foreach ($this->providers as $config)
+            return new SmppAddress($config['sender'], $config['source_ton']);
+    }
+
+    /**
+     * SMPP recipient
+     */
+    protected function recipient($mobile)
+    {
+        foreach ($this->providers as $config)
+            return new SmppAddress($mobile, $config['destination_ton'], $config['destination_npi']);
     }
 
 }

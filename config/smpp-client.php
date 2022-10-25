@@ -24,10 +24,10 @@ return [
             'port' => 9999,
             'login' => '',
             'password' => '',
-
             'sender' => '',
             'timeout' => 5000,
-            'source_ton' => 1,
+
+            'source_ton' => 5,
             'source_npi' => 1,
             'destination_ton' => 1,
             'destination_npi' => 1,

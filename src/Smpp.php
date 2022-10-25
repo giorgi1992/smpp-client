@@ -62,6 +62,8 @@ class Smpp implements SmppInterface
 
                     $this->smpp = $smpp;
                     $this->transport = $transport;
+
+                    dd($this->smpp, $this->transport);
                 }
                 catch (SocketTransportException $e)
                 {

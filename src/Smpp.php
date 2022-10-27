@@ -89,7 +89,7 @@ class Smpp implements SmppInterface
      */
     protected function sender()
     {
-        return new SmppAddress('Sender', PhpSmpp::TON_ALPHANUMERIC);
+        return new SmppAddress($this->config['sender'], PhpSmpp::TON_ALPHANUMERIC);
     }
 
     /**

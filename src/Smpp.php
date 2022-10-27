@@ -40,7 +40,6 @@ class Smpp implements SmppInterface
 
     /**
      * Constructor
-     * @throws Exception
      */
     public function __construct(Repository $config)
     {
@@ -59,6 +58,8 @@ class Smpp implements SmppInterface
     public function sendOne($phone, $message)
     {
         $this->setup();
+
+        $this->delivery();
 
         return $this->send($this->sender(), $this->recipient($phone), $message);
     }
@@ -108,7 +109,6 @@ class Smpp implements SmppInterface
 
     /**
      * SMPP setup
-     * @throws Exception
      */
     protected function setup()
     {
@@ -117,14 +117,15 @@ class Smpp implements SmppInterface
         try
         {
             $transport->setRecvTimeout($this->config['timeout']);
-            $transport->debug = $this->config['debug'];
 
             $smpp = new SmppClient($transport);
             $smpp::$system_type = $this->config['system_type'];
             $smpp::$sms_registered_delivery_flag = $this->config['sms_registered_delivery_flag'];
             $smpp->debug = $this->config['debug'];
 
+            $transport->debug = $this->config['debug'];
             $transport->open();
+
             $smpp->bindTransmitter($this->config['login'], $this->config['password']);
 
             $this->smpp = $smpp;
@@ -133,6 +134,15 @@ class Smpp implements SmppInterface
         catch (Exception $e) {
             exit("Provider: {$this->provider}, Message: {$e->getMessage()}.");
         }
+    }
+
+    public function delivery()
+    {
+        $this->transport->open();
+        $this->transport->bindReceiver($this->config['login'], $this->config['password']);
+
+        $sms = $this->smpp->readSMS();
+        dd($sms);
     }
 
 }

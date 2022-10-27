@@ -31,7 +31,7 @@ class Smpp implements SmppInterface
     /**
      * Config, provider
      */
-    protected $provider = 'default';
+    protected $provider;
 
     /**
      * Transport
@@ -40,22 +40,17 @@ class Smpp implements SmppInterface
 
     /**
      * Constructor
+     * @throws Exception
      */
     public function __construct(Repository $config)
     {
-        if($config->get('smpp-client'))
-        {
-            $this->providers = $config->get('smpp-client.providers', []);
-            $this->provider = $config->get('smpp-client.default_provider', 'example');
+        $config = $config->get('smpp-client', $config->get('smpp-client-default'));
+        $this->providers = $config['providers'];
+        $this->provider = $config['default_provider'];
 
-            if (array_key_exists($this->provider, $this->providers))
-                $this->config = $this->providers[$this->provider];
-        }
-        else
-        {
-            print 'Config file config/smpp-client.php does not exists.';
-            exit;
-        }
+        array_key_exists($this->provider, $this->providers)
+            ? $this->config = $this->providers[$this->provider]
+            : exit("Incorrect provider configuration.");
     }
 
     /**
@@ -113,39 +108,30 @@ class Smpp implements SmppInterface
 
     /**
      * SMPP setup
+     * @throws Exception
      */
     protected function setup()
     {
-        if(isset($this->config))
+        $transport = new SocketTransport([$this->config['host']], $this->config['port']);
+
+        try
         {
-            $config = $this->config;
-            $transport = new SocketTransport([$config['host']], $config['port']);
+            $transport->setRecvTimeout($this->config['timeout']);
+            $transport->debug = $this->config['debug'];
 
-            try
-            {
-                $transport->setRecvTimeout($config['timeout']);
-                $transport->debug = $config['debug'];
+            $smpp = new SmppClient($transport);
+            $smpp::$system_type = $this->config['system_type'];
+            $smpp::$sms_registered_delivery_flag = $this->config['sms_registered_delivery_flag'];
+            $smpp->debug = $this->config['debug'];
 
-                $smpp = new SmppClient($transport);
-                $smpp::$system_type = $config['system_type'];
-                $smpp::$sms_registered_delivery_flag = $config['sms_registered_delivery_flag'];
-                $smpp->debug = $config['debug'];
+            $transport->open();
+            $smpp->bindTransmitter($this->config['login'], $this->config['password']);
 
-                $transport->open();
-                $smpp->bindTransmitter($config['login'], $config['password']);
-
-                $this->smpp = $smpp;
-                $this->transport = $transport;
-            }
-            catch (Exception $e) {
-                print "Provider: {$this->provider}, Message: {$e->getMessage()}.";
-                exit;
-            }
+            $this->smpp = $smpp;
+            $this->transport = $transport;
         }
-        else
-        {
-            print "Incorrect provider parameters.";
-            exit;
+        catch (Exception $e) {
+            exit("Provider: {$this->provider}, Message: {$e->getMessage()}.");
         }
     }
 

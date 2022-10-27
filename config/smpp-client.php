@@ -14,8 +14,6 @@ return [
     * Debug <debug>, bool
     */
 
-    'default_provider' => 'example',
-
     'providers' => [
         'example' => [
             'host' => '127.0.0.1',
@@ -30,6 +28,11 @@ return [
             'sms_registered_delivery_flag' => true,
             'debug' =>  false
         ],
-    ]
+    ],
+
+    /*
+    * Default provider config <default_provider>, string
+    */
+    'default_provider' => 'example',
 
 ];

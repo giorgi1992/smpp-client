@@ -13,7 +13,7 @@ class SmppProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/../config/smpp-client.php' => config_path('smpp-client.php'),
+            __DIR__ . '/../config/smpp-client.php' => config_path('smpp-client'),
         ]);
     }
 
@@ -22,6 +22,7 @@ class SmppProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->mergeConfigFrom( __DIR__ . '/../config/smpp-client.php', 'smpp-client-default');
         $this->app->bind(SmppInterface::class, Smpp::class);
     }
 

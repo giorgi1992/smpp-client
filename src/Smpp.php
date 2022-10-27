@@ -139,7 +139,7 @@ class Smpp implements SmppInterface
     public function delivery()
     {
         $this->transport->open();
-        $this->transport->bindReceiver($this->config['login'], $this->config['password']);
+        $this->smpp->bindReceiver($this->config['login'], $this->config['password']);
 
         $sms = $this->smpp->readSMS();
         dd($sms);

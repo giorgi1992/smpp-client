@@ -39,6 +39,11 @@ class Smpp implements SmppInterface
     protected $transport;
 
     /**
+     * Delivery report
+     */
+    protected $delivery_report;
+
+    /**
      * Constructor
      */
     public function __construct(Repository $config)
@@ -50,6 +55,17 @@ class Smpp implements SmppInterface
         array_key_exists($this->provider, $this->providers)
             ? $this->config = $this->providers[$this->provider]
             : exit("Incorrect provider configuration.");
+
+        $this->transport = new SocketTransport([$this->config['host']], $this->config['port']);
+    }
+
+    /**
+     * Restructor
+     */
+    public function __destruct()
+    {
+        $this->smpp->close();
+        $this->transport->close();
     }
 
     /**
@@ -59,7 +75,7 @@ class Smpp implements SmppInterface
     {
         $this->setup();
 
-        $this->delivery();
+        $this->deliveryReport();
 
         return $this->send($this->sender(), $this->recipient($phone), $message);
     }
@@ -101,10 +117,7 @@ class Smpp implements SmppInterface
      */
     protected function send($sender, $recipient, $message)
     {
-        $message = $this->gsmEncoder($message);
-
-        if(isset($this->smpp))
-            return $this->smpp->sendSMS($sender, $recipient, $message, []);
+        return $this->smpp->sendSMS($sender, $recipient, $this->gsmEncoder($message), []);
     }
 
     /**
@@ -112,37 +125,42 @@ class Smpp implements SmppInterface
      */
     protected function setup()
     {
-        $transport = new SocketTransport([$this->config['host']], $this->config['port']);
-
         try
         {
-            $transport->setRecvTimeout($this->config['timeout']);
+            $this->transport->setRecvTimeout($this->config['timeout']);
 
-            $smpp = new SmppClient($transport);
+            $smpp = new SmppClient($this->transport);
             $smpp::$system_type = $this->config['system_type'];
             $smpp::$sms_registered_delivery_flag = $this->config['sms_registered_delivery_flag'];
+
             $smpp->debug = $this->config['debug'];
+            $this->transport->debug = $this->config['debug'];
 
-            $transport->debug = $this->config['debug'];
-            $transport->open();
-
+            $this->transport->open();
             $smpp->bindTransmitter($this->config['login'], $this->config['password']);
-
             $this->smpp = $smpp;
-            $this->transport = $transport;
         }
         catch (Exception $e) {
             exit("Provider: {$this->provider}, Message: {$e->getMessage()}.");
         }
     }
 
-    public function delivery()
+    /**
+     * Delivery report
+     */
+    protected function deliveryReport()
     {
-        $this->transport->open();
-        $this->smpp->bindReceiver($this->config['login'], $this->config['password']);
+        try
+        {
+            $smpp = new SmppClient($this->transport);
+            $this->transport->open();
+            $smpp->bindReceiver($this->config['login'], $this->config['password']);
 
-        $sms = $this->smpp->readSMS();
-        dd($sms);
+            $this->delivery_report = $smpp->readSMS();
+        }
+        catch (Exception $e) {
+            exit("Provider: {$this->provider}, Message: {$e->getMessage()}.");
+        }
     }
 
 }

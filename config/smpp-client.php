@@ -21,10 +21,9 @@ return [
             'login' => '',
             'password' => '',
             'sender' => '',
+            'system_type' => '',
             'timeout' => 5000,
 
-            'system_type' => 'default',
-            'data_coding_ucs2' => 8,
             'sms_registered_delivery_flag' => true,
             'debug' =>  false
         ],

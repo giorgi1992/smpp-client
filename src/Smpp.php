@@ -131,10 +131,10 @@ class Smpp implements SmppInterface
             $this->transport->debug = $this->config['debug'];
             $this->transport->open();
             $smpp->bindTransmitter($this->config['login'], $this->config['password']);
-
             $this->smpp = $smpp;
         }
-        catch (Exception $e) {
+        catch (Exception $e)
+        {
             exit("Provider: {$this->provider}, Message: {$e->getMessage()}.");
         }
     }
@@ -161,7 +161,8 @@ class Smpp implements SmppInterface
 
             return $smpp->readSMS();
         }
-        catch (Exception $e) {
+        catch (Exception $e)
+        {
             exit("Provider: {$this->provider}, Message: {$e->getMessage()}.");
         }
     }

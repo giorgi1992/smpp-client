@@ -15,4 +15,9 @@ interface SmppInterface
      */
     public function sendBulk(array $phones, $message);
 
+    /**
+     * Delivery report.
+     */
+    public function deliveryReport();
+
 }
